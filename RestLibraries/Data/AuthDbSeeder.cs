@@ -14,14 +14,11 @@ namespace RestLibraries.Data
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
-
         public async Task SeedAsync()
         {
             await AddDefaultRoles();
             await AddAdminUser();
         }
-
         private async Task AddAdminUser()
         {
             var newAdminUser = new LibrariesUser()
@@ -39,12 +36,7 @@ namespace RestLibraries.Data
                     await _userManager.AddToRolesAsync(newAdminUser, LibrariesRoles.All);
                 }
             }
-
-
-
-
         }
-
         private async Task AddDefaultRoles()
         {
             foreach(var role in LibrariesRoles.All)
