@@ -17,33 +17,11 @@ namespace RestLibraries.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AmountOfLibraries = table.Column<int>(type: "int", nullable: false),
-                    AmountOfDistricts = table.Column<int>(type: "int", nullable: false)
+                    AmountOfBooks = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Districts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DistLibraries = table.Column<int>(type: "int", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Districts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Districts_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,37 +32,59 @@ namespace RestLibraries.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LibraryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LibraryBookedBooks = table.Column<int>(type: "int", nullable: false),
-                    DistrictId = table.Column<int>(type: "int", nullable: false)
+                    CityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Libraries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Libraries_Districts_DistrictId",
-                        column: x => x.DistrictId,
-                        principalTable: "Districts",
+                        name: "FK_Libraries_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    BookId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookAuthor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    libraryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Books", x => x.BookId);
+                    table.ForeignKey(
+                        name: "FK_Books_Libraries_libraryId",
+                        column: x => x.libraryId,
+                        principalTable: "Libraries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Districts_CityId",
-                table: "Districts",
-                column: "CityId");
+                name: "IX_Books_libraryId",
+                table: "Books",
+                column: "libraryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Libraries_DistrictId",
+                name: "IX_Libraries_CityId",
                 table: "Libraries",
-                column: "DistrictId");
+                column: "CityId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Libraries");
+                name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Districts");
+                name: "Libraries");
 
             migrationBuilder.DropTable(
                 name: "Cities");

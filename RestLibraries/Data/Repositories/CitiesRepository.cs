@@ -8,7 +8,7 @@ namespace RestLibraries.Data.Repositories
     {
         Task CreateAsync(City city);
         Task DeleteAsync(City city);
-        Task<IReadOnlyList<Library>> GetAllCityLibraries(int cityId);
+        Task<IReadOnlyList<Book>> GetAllCityBooks(int cityId);
         Task<IReadOnlyList<City>> GetCitiesAsync();
         Task<City?> GetCityAsync(int cityId);
         Task UpdateAsync(City city);
@@ -50,13 +50,13 @@ namespace RestLibraries.Data.Repositories
             await _librariesDbContext.SaveChangesAsync();
 
         }
-        public async Task<IReadOnlyList<Library>> GetAllCityLibraries(int cityId)
+        public async Task<IReadOnlyList<Book>> GetAllCityBooks(int cityId)
         {
-            return await _librariesDbContext.Libraries
+            return await _librariesDbContext.Books
                 .AsNoTracking()
-                .Include(o => o.District)
+                .Include(o => o.library)
                 .ThenInclude(o => o.City)
-                .Where(o => o.District.City.Id == cityId)
+                .Where(o => o.library.City.Id == cityId)
                 .ToListAsync();
         }
 

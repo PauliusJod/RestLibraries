@@ -11,7 +11,7 @@ using RestLibraries.Data;
 namespace RestLibraries.Migrations
 {
     [DbContext(typeof(LibrariesDbContext))]
-    [Migration("20221020095040_Initial migration")]
+    [Migration("20221110172330_Initial migration")]
     partial class Initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,36 @@ namespace RestLibraries.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("RestLibraries.Data.Entities.Book", b =>
+                {
+                    b.Property<int>("BookId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"), 1L, 1);
+
+                    b.Property<string>("BookAuthor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BookDesc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BookName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("libraryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookId");
+
+                    b.HasIndex("libraryId");
+
+                    b.ToTable("Books");
+                });
+
             modelBuilder.Entity("RestLibraries.Data.Entities.City", b =>
                 {
                     b.Property<int>("Id")
@@ -31,7 +61,7 @@ namespace RestLibraries.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AmountOfDistricts")
+                    b.Property<int>("AmountOfBooks")
                         .HasColumnType("int");
 
                     b.Property<int>("AmountOfLibraries")
@@ -50,35 +80,6 @@ namespace RestLibraries.Migrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("RestLibraries.Data.Entities.District", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DistLibraries")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.ToTable("Districts");
-                });
-
             modelBuilder.Entity("RestLibraries.Data.Entities.Library", b =>
                 {
                     b.Property<int>("Id")
@@ -87,7 +88,7 @@ namespace RestLibraries.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("DistrictId")
+                    b.Property<int>("CityId")
                         .HasColumnType("int");
 
                     b.Property<int>("LibraryBookedBooks")
@@ -99,12 +100,23 @@ namespace RestLibraries.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DistrictId");
+                    b.HasIndex("CityId");
 
                     b.ToTable("Libraries");
                 });
 
-            modelBuilder.Entity("RestLibraries.Data.Entities.District", b =>
+            modelBuilder.Entity("RestLibraries.Data.Entities.Book", b =>
+                {
+                    b.HasOne("RestLibraries.Data.Entities.Library", "library")
+                        .WithMany()
+                        .HasForeignKey("libraryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("library");
+                });
+
+            modelBuilder.Entity("RestLibraries.Data.Entities.Library", b =>
                 {
                     b.HasOne("RestLibraries.Data.Entities.City", "City")
                         .WithMany()
@@ -113,17 +125,6 @@ namespace RestLibraries.Migrations
                         .IsRequired();
 
                     b.Navigation("City");
-                });
-
-            modelBuilder.Entity("RestLibraries.Data.Entities.Library", b =>
-                {
-                    b.HasOne("RestLibraries.Data.Entities.District", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("District");
                 });
 #pragma warning restore 612, 618
         }

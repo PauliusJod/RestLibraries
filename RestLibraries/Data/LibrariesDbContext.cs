@@ -1,12 +1,15 @@
 ﻿using RestLibraries.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using RestLibraries.Auth;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace RestLibraries.Data
 {
-    public class LibrariesDbContext : DbContext
+    public class LibrariesDbContext : IdentityDbContext<LibrariesUser>
     {
         public DbSet<City> Cities { get; set; }
-        public DbSet<District> Districts { get; set; }
+        //public DbSet<District> Districts { get; set; }
+        public DbSet<Book> Books { get; set; }
         public DbSet<Library> Libraries { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
