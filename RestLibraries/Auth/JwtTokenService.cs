@@ -44,7 +44,22 @@ namespace RestLibraries.Auth
 
             return new JwtSecurityTokenHandler().WriteToken(accessSecurityToken);
         }
+        //public string DeleteAccessToken(JwtSecurityToken tokenOld)
+        //{
+        //    var a = new JwtSecurityToken();
+        //    var accessSecurityToken = new JwtSecurityToken
+        //    (
+        //    issuer: tokenOld.Issuer,
+        //    audience: "TrustedClient",
+        //    expires: DateTime.Now,
+        //    claims: tokenOld.Claims,
+        //    signingCredentials: tokenOld.SigningCredentials// new SigningCredentials(_authSigningKey, SecurityAlgorithms.HmacSha256)
+        //    );
 
+
+
+        //    return new JwtSecurityTokenHandler().TokenLifetimeInMinutes(accessSecurityToken);
+        //}
 
     }
 }

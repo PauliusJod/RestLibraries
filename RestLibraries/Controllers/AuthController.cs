@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RestLibraries.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace RestLibraries.Controllers
 {
@@ -41,7 +43,48 @@ namespace RestLibraries.Controllers
             return CreatedAtAction(nameof(Register), new UserDto(newUser.Id, newUser.UserName, newUser.Email));
 
         }
+         //string rawUserId = HttpContext.User.FindFirstValue("id"); // User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            //if(!Guid.TryParse(rawUserId, out Guid userId))
+            //{
+            //    return Unauthorized("unauthorized......");
+            //}
+            //await 
 
+            ////return CreatedAtAction(nameof(Register), new UserDto(newUser.Id, newUser.UserName, newUser.Email));
+            //return NoContent("Ištrintas");
+
+
+            //TokenLifetimeInMinutes
+            //     _jwtTokenService.GetToken();
+        [Authorize]
+        [HttpDelete]
+        [Route("logout")]
+        public async Task<ActionResult> Logout()//string userName)
+        {
+
+            //var user = _userManager.GetUserAsync(userName);
+            //var city = await _userManager.GetAuthenticationTokenAsync(cityid);
+            //// 404
+            //if (city == null)
+            //    return NotFound();
+            //await _citiesRepository.DeleteAsync(city);
+
+
+
+            //// 204
+            //return NoContent();
+            var user = await _userManager.FindByNameAsync("paulius33");//logoutDto.UserName);
+            if (user == null)
+                return BadRequest("Request invalid.");
+            var soo = await _userManager.RemoveAuthenticationTokenAsync(user,"HS256","Bearer");
+            _userManager.ResetAuthenticatorKeyAsync(user);
+            ////valid user
+            //var roles = await _userManager.GetRolesAsync(user);
+            //_jwtTokenService.DeleteAccessToken(user.UserName, user.Id, roles);
+
+            return Ok("Deleted?");
+
+        }
         [HttpPost]
         [Route("login")]
         public async Task<ActionResult> Login(LoginDto loginDto)
@@ -64,10 +107,5 @@ namespace RestLibraries.Controllers
 
 
         }
-
-
-
-
-
     }
 }
